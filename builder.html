@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Builder - QuizSpark</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <div>
+            <p class="eyebrow">Quiz Builder</p>
+            <h1 id="quizTitleText">Loading quiz...</h1>
+        </div>
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <button id="logoutBtn" type="button">Logout</button>
+        </nav>
+    </header>
+
+    <main class="layout">
+        <section class="panel">
+            <h2 id="formTitle">Add Question</h2>
+            <form id="questionForm" class="form">
+                <input type="hidden" id="questionId">
+
+                <label>Question</label>
+                <textarea id="question" rows="3" required></textarea>
+
+                <label>Option 1</label>
+                <input id="option1" required>
+
+                <label>Option 2</label>
+                <input id="option2" required>
+
+                <label>Option 3</label>
+                <input id="option3" required>
+
+                <label>Option 4</label>
+                <input id="option4" required>
+
+                <label>Correct Answer</label>
+                <select id="correctAnswer" required>
+                    <option value="">Choose correct option</option>
+                    <option value="1">Option 1</option>
+                    <option value="2">Option 2</option>
+                    <option value="3">Option 3</option>
+                    <option value="4">Option 4</option>
+                </select>
+
+                <div class="actions">
+                    <button type="submit">Save Question</button>
+                    <button id="cancelEditBtn" class="secondary hidden" type="button">Cancel</button>
+                </div>
+            </form>
+            <p id="message" class="message"></p>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <h2>Questions</h2>
+                <a id="hostLink" class="button-link" href="#">Host Quiz</a>
+            </div>
+            <div id="questionsList" class="list"></div>
+        </section>
+    </main>
+
+    <script type="module" src="assets/js/builder.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - QuizSpark</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <div>
+            <p class="eyebrow">QuizSpark</p>
+            <h1>Dashboard</h1>
+        </div>
+        <nav>
+            <a href="result.html">My Results</a>
+            <button id="logoutBtn" type="button">Logout</button>
+        </nav>
+    </header>
+
+    <main class="dashboard">
+        <section class="hero-band">
+            <div>
+                <p class="eyebrow">Create. Conduct. Compete.</p>
+                <h2>Run classroom quizzes with join codes and instant scoring.</h2>
+            </div>
+            <form id="joinForm" class="join-box">
+                <label>Enter Quiz Code</label>
+                <div class="inline-form">
+                    <input id="joinCode" maxlength="6" placeholder="ABC123" required>
+                    <button type="submit">Join</button>
+                </div>
+                <p id="joinMessage" class="message"></p>
+            </form>
+        </section>
+
+        <section class="layout">
+            <div class="panel">
+                <h2>Create Quiz</h2>
+                <form id="createQuizForm" class="form">
+                    <label>Quiz Title</label>
+                    <input id="quizTitle" placeholder="Example: JavaScript Basics" required>
+
+                    <label>Description</label>
+                    <textarea id="quizDescription" rows="3" placeholder="Short description"></textarea>
+
+                    <button type="submit">Create Quiz</button>
+                </form>
+                <p id="createMessage" class="message"></p>
+            </div>
+
+            <div class="panel">
+                <h2>My Quizzes</h2>
+                <div id="quizList" class="list"></div>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="assets/js/dashboard.js"></script>
+</body>
+</html>

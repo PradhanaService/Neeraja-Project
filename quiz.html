@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Quiz - Online Quiz System</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <h1>Quiz</h1>
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="result.html">Results</a>
+            <button id="logoutBtn" type="button">Logout</button>
+        </nav>
+    </header>
+
+    <main class="quiz-page">
+        <section class="panel quiz-card">
+            <p id="progressText" class="muted"></p>
+            <h2 id="questionText">Loading question...</h2>
+            <form id="quizForm" class="options"></form>
+            <div class="actions">
+                <button id="prevBtn" class="secondary" type="button">Previous</button>
+                <button id="nextBtn" type="button">Next</button>
+                <button id="submitBtn" class="hidden" type="button">Submit Quiz</button>
+            </div>
+            <p id="message" class="message"></p>
+        </section>
+    </main>
+
+    <script type="module">
+        window.location.replace("dashboard.html");
+    </script>
+</body>
+</html>

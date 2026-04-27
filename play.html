@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Quiz - QuizSpark</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <div>
+            <p class="eyebrow">Player Mode</p>
+            <h1 id="quizTitle">Loading quiz...</h1>
+        </div>
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <button id="logoutBtn" type="button">Logout</button>
+        </nav>
+    </header>
+
+    <main class="quiz-page">
+        <section class="panel quiz-card">
+            <div class="progress-row">
+                <p id="progressText" class="muted"></p>
+                <p id="scorePreview" class="pill">Score after submit</p>
+            </div>
+            <h2 id="questionText">Loading question...</h2>
+            <form id="quizForm" class="options"></form>
+            <div class="actions">
+                <button id="prevBtn" class="secondary" type="button">Previous</button>
+                <button id="nextBtn" type="button">Next</button>
+                <button id="submitBtn" class="hidden" type="button">Submit Quiz</button>
+            </div>
+            <p id="message" class="message"></p>
+        </section>
+    </main>
+
+    <script type="module" src="assets/js/play.js"></script>
+</body>
+</html>

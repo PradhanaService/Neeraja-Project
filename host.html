@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host Quiz - QuizSpark</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <div>
+            <p class="eyebrow">Live Quiz</p>
+            <h1 id="hostQuizTitle">Loading...</h1>
+        </div>
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <button id="logoutBtn" type="button">Logout</button>
+        </nav>
+    </header>
+
+    <main class="dashboard">
+        <section class="host-stage">
+            <p class="muted">Share this code with participants</p>
+            <div id="quizCode" class="join-code">------</div>
+            <div class="actions center-actions">
+                <button id="startBtn" type="button">Start Quiz</button>
+                <button id="stopBtn" class="secondary" type="button">Stop Quiz</button>
+                <a id="playLink" class="button-link" href="#">Open Player View</a>
+            </div>
+            <p id="statusText" class="message"></p>
+        </section>
+
+        <section class="panel wide-panel">
+            <h2>Leaderboard</h2>
+            <div id="leaderboard" class="list"></div>
+        </section>
+    </main>
+
+    <script type="module" src="assets/js/host.js"></script>
+</body>
+</html>
