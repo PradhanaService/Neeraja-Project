@@ -51,7 +51,8 @@ export function findQuizById(quizId) {
 }
 
 export function findQuizByCode(code) {
-    return getQuizzes().find((quiz) => quiz.code === code) || null;
+    const normalizedCode = normalizeQuizCode(code);
+    return getQuizzes().find((quiz) => normalizeQuizCode(quiz.code) === normalizedCode) || null;
 }
 
 export function getQuestions() {
@@ -101,6 +102,10 @@ export function saveResult(result) {
 
 export function createId(prefix) {
     return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+}
+
+export function normalizeQuizCode(code) {
+    return String(code || "").trim().toUpperCase();
 }
 
 function readList(key) {

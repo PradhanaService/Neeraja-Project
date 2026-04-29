@@ -1,5 +1,5 @@
 import { requireLogin, setupLogout, showMessage, escapeHtml } from "./common.js";
-import { createId, findQuizByCode, getQuizzes, saveQuiz } from "./storage.js";
+import { createId, findQuizByCode, getQuizzes, normalizeQuizCode, saveQuiz } from "./storage.js";
 
 const createQuizForm = document.getElementById("createQuizForm");
 const quizList = document.getElementById("quizList");
@@ -38,11 +38,11 @@ createQuizForm.addEventListener("submit", (event) => {
 joinForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const code = document.getElementById("joinCode").value.trim().toUpperCase();
+    const code = normalizeQuizCode(document.getElementById("joinCode").value);
     const quiz = findQuizByCode(code);
 
     if (!quiz) {
-        showMessage(joinMessage, "No quiz found with this code.");
+        showMessage(joinMessage, "No quiz found with this code in this browser.");
         return;
     }
 

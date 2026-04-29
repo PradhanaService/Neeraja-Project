@@ -61,3 +61,7 @@ export function escapeHtml(value) {
 export function getQuizIdFromUrl() {
     return new URLSearchParams(window.location.search).get("quizId");
 }
+
+export function getQuizCodeFromUrl() {
+    return new URLSearchParams(window.location.search).get("quizCode");
+}

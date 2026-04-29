@@ -1,7 +1,8 @@
-import { requireLogin, setupLogout, showMessage, getQuizIdFromUrl } from "./common.js";
-import { createId, findQuizById, getQuestionsByQuiz, saveResult } from "./storage.js";
+import { requireLogin, setupLogout, showMessage, getQuizCodeFromUrl, getQuizIdFromUrl } from "./common.js";
+import { createId, findQuizByCode, findQuizById, getQuestionsByQuiz, saveResult } from "./storage.js";
 
-const quizId = getQuizIdFromUrl();
+let quizId = getQuizIdFromUrl();
+const quizCode = getQuizCodeFromUrl();
 const quizTitle = document.getElementById("quizTitle");
 const progressText = document.getElementById("progressText");
 const questionText = document.getElementById("questionText");
@@ -21,12 +22,18 @@ requireLogin((user) => {
     currentUser = user;
     setupLogout();
 
-    if (!quizId) {
+    if (!quizId && !quizCode) {
         window.location.href = "dashboard.html";
         return;
     }
 
     quiz = findQuizById(quizId);
+
+    if (!quiz && quizCode) {
+        quiz = findQuizByCode(quizCode);
+        quizId = quiz ? quiz.id : quizId;
+    }
+
     questions = getQuestionsByQuiz(quizId);
 
     if (quiz) {
@@ -56,6 +63,11 @@ nextBtn.addEventListener("click", () => {
 
 submitBtn.addEventListener("click", () => {
     saveCurrentAnswer();
+
+    if (!quiz) {
+        showMessage(message, "Unable to submit because the quiz was not found.");
+        return;
+    }
 
     if (Object.keys(selectedAnswers).length < questions.length) {
         showMessage(message, "Please answer all questions before submitting.");
@@ -99,6 +111,11 @@ function showQuestion() {
 
     if (!quiz) {
         questionText.textContent = "Quiz not found.";
+        quizForm.innerHTML = `
+            <p class="muted">
+                This quiz is not available in this browser. The current version stores quizzes in browser localStorage, so participants must use the same browser data or the app needs a shared database for online hosting.
+            </p>
+        `;
         hideControls();
         return;
     }
@@ -141,7 +158,6 @@ function saveCurrentAnswer() {
 
 function hideControls() {
     progressText.textContent = "";
-    quizForm.innerHTML = "";
     prevBtn.classList.add("hidden");
     nextBtn.classList.add("hidden");
     submitBtn.classList.add("hidden");

@@ -44,7 +44,7 @@ function loadQuiz() {
 
     hostQuizTitle.textContent = quiz.title;
     quizCode.textContent = quiz.code;
-    playLink.href = `play.html?quizId=${quizId}`;
+    playLink.href = `play.html?quizId=${quizId}&quizCode=${encodeURIComponent(quiz.code)}`;
     showMessage(statusText, quiz.isLive ? "Quiz is live." : "Quiz is stopped.", quiz.isLive);
 }
 
