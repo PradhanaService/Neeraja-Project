@@ -1,5 +1,12 @@
 import { requireLogin, setupLogout, showMessage, escapeHtml } from "./common.js";
-import { createId, findQuizByCode, getQuizzes, normalizeQuizCode, saveQuiz } from "./storage.js";
+import {
+    createId,
+    deleteQuizById,
+    findQuizByCode,
+    getQuizzes,
+    normalizeQuizCode,
+    saveQuiz
+} from "./storage.js";
 
 const createQuizForm = document.getElementById("createQuizForm");
 const quizList = document.getElementById("quizList");
@@ -77,10 +84,21 @@ async function loadMyQuizzes() {
             <div class="question-actions">
                 <a class="button-link secondary-link" href="builder.html?quizId=${quiz.id}">Edit</a>
                 <a class="button-link" href="host.html?quizId=${quiz.id}">Host</a>
+                <button class="danger delete-quiz-btn" type="button">Delete</button>
             </div>
         `;
+        item.querySelector(".delete-quiz-btn").addEventListener("click", () => deleteQuiz(quiz.id));
         quizList.appendChild(item);
     });
+}
+
+async function deleteQuiz(quizId) {
+    if (!confirm("Delete this quiz and all its questions/results?")) {
+        return;
+    }
+
+    await deleteQuizById(quizId);
+    await loadMyQuizzes();
 }
 
 function makeCode() {

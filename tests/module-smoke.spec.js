@@ -84,18 +84,28 @@ test("storage.js saves, finds, updates, and normalizes localStorage data", async
         const savedUser = { id: "u1", email: "a@example.com", password: "pw" };
         const savedQuiz = { id: "q1", ownerId: "u1", code: "abc123", isLive: false };
         const savedQuestion = { id: "qq1", quizId: "q1", createdAt: 2 };
+        const savedResult = { id: "r1", quizId: "q1", userId: "u1" };
 
         await storage.saveUser(savedUser);
         await storage.saveQuiz(savedQuiz);
         await storage.saveQuestion(savedQuestion);
+        await storage.saveResult(savedResult);
         await storage.updateQuiz("q1", { isLive: true });
         await storage.updateQuestion("qq1", { question: "Updated?" });
+        const beforeDelete = {
+            quizLive: (await storage.findQuizById("q1"))?.isLive,
+            questionText: (await storage.getQuestionsByQuiz("q1"))[0]?.question
+        };
+        await storage.deleteQuizById("q1");
 
         return {
             userFound: (await storage.findUserByLogin("a@example.com", "pw"))?.id,
-            quizFound: (await storage.findQuizByCode(" ABC123 "))?.id,
-            quizLive: (await storage.findQuizById("q1"))?.isLive,
-            questionText: (await storage.getQuestionsByQuiz("q1"))[0]?.question,
+            quizFound: beforeDelete.quizLive ? "q1" : null,
+            quizLive: beforeDelete.quizLive,
+            questionText: beforeDelete.questionText,
+            quizDeleted: await storage.findQuizById("q1"),
+            questionsDeleted: (await storage.getQuestionsByQuiz("q1")).length,
+            resultsDeleted: (await storage.getResults()).filter((result) => result.quizId === "q1").length,
             normalized: storage.normalizeQuizCode(" ab12 ")
         };
     });
@@ -105,6 +115,9 @@ test("storage.js saves, finds, updates, and normalizes localStorage data", async
         quizFound: "q1",
         quizLive: true,
         questionText: "Updated?",
+        quizDeleted: null,
+        questionsDeleted: 0,
+        resultsDeleted: 0,
         normalized: "AB12"
     });
     expect(errors).toEqual([]);
@@ -166,6 +179,34 @@ test("dashboard.js creates a quiz and opens the builder", async ({ page }) => {
     await page.getByRole("button", { name: "Create Quiz" }).click();
 
     await expect(page).toHaveURL(/builder\.html\?quizId=quiz_/);
+    expect(errors).toEqual([]);
+});
+
+test("dashboard.js deletes a quiz and its related data", async ({ page }) => {
+    const errors = watchForErrors(page);
+    await seedApp(page, {
+        questions,
+        results: [{
+            id: "result_1",
+            quizId: quiz.id,
+            userId: user.id,
+            score: 1
+        }]
+    });
+    await page.goto(`${baseUrl}/dashboard.html`);
+
+    page.once("dialog", (dialog) => dialog.accept());
+    await page.getByRole("button", { name: "Delete" }).click();
+
+    await expect(page.locator("#quizList")).toContainText("No quizzes yet.");
+    const remaining = await page.evaluate(() => ({
+        quizzes: JSON.parse(localStorage.getItem("quizspark_quizzes")),
+        questions: JSON.parse(localStorage.getItem("quizspark_questions")),
+        results: JSON.parse(localStorage.getItem("quizspark_results"))
+    }));
+    expect(remaining.quizzes).toEqual([]);
+    expect(remaining.questions).toEqual([]);
+    expect(remaining.results).toEqual([]);
     expect(errors).toEqual([]);
 });
 

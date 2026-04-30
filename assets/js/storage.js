@@ -91,6 +91,29 @@ export async function updateQuiz(quizId, updates) {
     });
 }
 
+export async function deleteQuizById(quizId) {
+    if (useLocalStorage()) {
+        saveList(QUIZZES_KEY, (await getQuizzes()).filter((quiz) => quiz.id !== quizId));
+        saveList(QUESTIONS_KEY, (await getQuestions()).filter((question) => question.quizId !== quizId));
+        saveList(RESULTS_KEY, (await getResults()).filter((result) => result.quizId !== quizId));
+        return;
+    }
+
+    const db = await getDb();
+    const [questions, results] = await Promise.all([getQuestions(), getResults()]);
+    const deleteTasks = [
+        deleteDoc(doc(db, "quizzes", quizId)),
+        ...questions
+            .filter((question) => question.quizId === quizId)
+            .map((question) => deleteDoc(doc(db, "questions", question.id))),
+        ...results
+            .filter((result) => result.quizId === quizId)
+            .map((result) => deleteDoc(doc(db, "results", result.id)))
+    ];
+
+    await Promise.all(deleteTasks);
+}
+
 export async function findQuizById(quizId) {
     return (await getQuizzes()).find((quiz) => quiz.id === quizId) || null;
 }
