@@ -199,13 +199,19 @@ async function migrateLocalStorageData() {
         for (const [localKey, collectionName] of migrationSets) {
             const items = readLocalList(localKey).filter((item) => item && item.id);
 
-            for (const item of items) {
-                await setDoc(doc(firestoreDb, collectionName, item.id), item);
-            }
+            await Promise.all(items.map((item) => migrateItem(collectionName, item)));
         }
     })();
 
     return migrationPromise;
+}
+
+async function migrateItem(collectionName, item) {
+    try {
+        await setDoc(doc(firestoreDb, collectionName, item.id), item);
+    } catch (error) {
+        console.warn(`Skipped local ${collectionName} migration for ${item.id}:`, error);
+    }
 }
 
 function useLocalStorage() {

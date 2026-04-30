@@ -29,15 +29,21 @@ loginForm.addEventListener("submit", async (event) => {
 
     const email = document.getElementById("loginEmail").value.trim().toLowerCase();
     const password = document.getElementById("loginPassword").value;
-    const user = await findUserByLogin(email, password);
 
-    if (!user) {
-        showMessage(message, "Invalid email or password.");
-        return;
+    try {
+        const user = await findUserByLogin(email, password);
+
+        if (!user) {
+            showMessage(message, "Invalid email or password.");
+            return;
+        }
+
+        saveSession(user);
+        window.location.href = "dashboard.html";
+    } catch (error) {
+        console.error(error);
+        showMessage(message, "Login failed. Please refresh and try again.");
     }
-
-    saveSession(user);
-    window.location.href = "dashboard.html";
 });
 
 registerForm.addEventListener("submit", async (event) => {
@@ -52,21 +58,26 @@ registerForm.addEventListener("submit", async (event) => {
         return;
     }
 
-    if (await findUserByEmail(email)) {
-        showMessage(message, "This email is already registered. Please login.");
-        return;
+    try {
+        if (await findUserByEmail(email)) {
+            showMessage(message, "This email is already registered. Please login.");
+            return;
+        }
+
+        const user = {
+            id: createId("user"),
+            name,
+            email,
+            password,
+            role: "user",
+            createdAt: Date.now()
+        };
+
+        await saveUser(user);
+        saveSession(user);
+        window.location.href = "dashboard.html";
+    } catch (error) {
+        console.error(error);
+        showMessage(message, "Registration failed. Please refresh and try again.");
     }
-
-    const user = {
-        id: createId("user"),
-        name,
-        email,
-        password,
-        role: "user",
-        createdAt: Date.now()
-    };
-
-    await saveUser(user);
-    saveSession(user);
-    window.location.href = "dashboard.html";
 });

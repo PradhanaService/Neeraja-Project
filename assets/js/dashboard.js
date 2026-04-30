@@ -42,7 +42,7 @@ joinForm.addEventListener("submit", async (event) => {
     const quiz = await findQuizByCode(code);
 
     if (!quiz) {
-        showMessage(joinMessage, "No quiz found with this code in this browser.");
+        showMessage(joinMessage, "No live quiz found with this code. Ask the host to refresh and start the quiz again.");
         return;
     }
 
