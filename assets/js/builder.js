@@ -20,7 +20,7 @@ const cancelEditBtn = document.getElementById("cancelEditBtn");
 let currentUser = null;
 let quiz = null;
 
-requireLogin((user) => {
+requireLogin(async (user) => {
     currentUser = user;
     setupLogout();
 
@@ -29,7 +29,7 @@ requireLogin((user) => {
         return;
     }
 
-    quiz = findQuizById(quizId);
+    quiz = await findQuizById(quizId);
 
     if (!quiz || quiz.ownerId !== currentUser.id) {
         quizTitleText.textContent = "Quiz not found";
@@ -40,10 +40,10 @@ requireLogin((user) => {
 
     quizTitleText.textContent = quiz.title;
     hostLink.href = `host.html?quizId=${quizId}`;
-    loadQuestions();
+    await loadQuestions();
 });
 
-questionForm.addEventListener("submit", (event) => {
+questionForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const questionId = document.getElementById("questionId").value;
@@ -58,10 +58,10 @@ questionForm.addEventListener("submit", (event) => {
     };
 
     if (questionId) {
-        updateQuestion(questionId, questionData);
+        await updateQuestion(questionId, questionData);
         showMessage(message, "Question updated.", true);
     } else {
-        saveQuestion({
+        await saveQuestion({
             id: createId("question"),
             ...questionData,
             createdAt: Date.now()
@@ -70,13 +70,13 @@ questionForm.addEventListener("submit", (event) => {
     }
 
     resetForm();
-    loadQuestions();
+    await loadQuestions();
 });
 
 cancelEditBtn.addEventListener("click", resetForm);
 
-function loadQuestions() {
-    const questions = getQuestionsByQuiz(quizId);
+async function loadQuestions() {
+    const questions = await getQuestionsByQuiz(quizId);
 
     if (questions.length === 0) {
         questionsList.innerHTML = "<p class='muted'>No questions yet. Add one to make this quiz playable.</p>";
@@ -118,13 +118,13 @@ function fillForm(question) {
     cancelEditBtn.classList.remove("hidden");
 }
 
-function deleteQuestion(id) {
+async function deleteQuestion(id) {
     if (!confirm("Delete this question?")) {
         return;
     }
 
-    deleteQuestionById(id);
-    loadQuestions();
+    await deleteQuestionById(id);
+    await loadQuestions();
 }
 
 function resetForm() {

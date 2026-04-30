@@ -13,28 +13,28 @@ const leaderboard = document.getElementById("leaderboard");
 let currentUser = null;
 let quiz = null;
 
-requireLogin((user) => {
+requireLogin(async (user) => {
     currentUser = user;
     setupLogout();
-    loadQuiz();
-    loadLeaderboard();
+    await loadQuiz();
+    await loadLeaderboard();
 });
 
-startBtn.addEventListener("click", () => {
-    setLiveStatus(true);
+startBtn.addEventListener("click", async () => {
+    await setLiveStatus(true);
 });
 
-stopBtn.addEventListener("click", () => {
-    setLiveStatus(false);
+stopBtn.addEventListener("click", async () => {
+    await setLiveStatus(false);
 });
 
-function loadQuiz() {
+async function loadQuiz() {
     if (!quizId) {
         window.location.href = "dashboard.html";
         return;
     }
 
-    quiz = findQuizById(quizId);
+    quiz = await findQuizById(quizId);
 
     if (!quiz || quiz.ownerId !== currentUser.id) {
         hostQuizTitle.textContent = "Quiz not found";
@@ -48,8 +48,8 @@ function loadQuiz() {
     showMessage(statusText, quiz.isLive ? "Quiz is live." : "Quiz is stopped.", quiz.isLive);
 }
 
-function setLiveStatus(isLive) {
-    updateQuiz(quizId, { isLive });
+async function setLiveStatus(isLive) {
+    await updateQuiz(quizId, { isLive });
     quiz = {
         ...quiz,
         isLive
@@ -57,8 +57,8 @@ function setLiveStatus(isLive) {
     showMessage(statusText, isLive ? "Quiz started. Students can join now." : "Quiz stopped.", isLive);
 }
 
-function loadLeaderboard() {
-    const results = getResults()
+async function loadLeaderboard() {
+    const results = (await getResults())
         .filter((result) => result.quizId === quizId)
         .sort((a, b) => b.score - a.score);
 

@@ -35,6 +35,12 @@ const questions = [
     }
 ];
 
+test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+        window.QUIZSPARK_USE_LOCAL_STORAGE = true;
+    });
+});
+
 function watchForErrors(page) {
     const errors = [];
 
@@ -79,17 +85,17 @@ test("storage.js saves, finds, updates, and normalizes localStorage data", async
         const savedQuiz = { id: "q1", ownerId: "u1", code: "abc123", isLive: false };
         const savedQuestion = { id: "qq1", quizId: "q1", createdAt: 2 };
 
-        storage.saveUser(savedUser);
-        storage.saveQuiz(savedQuiz);
-        storage.saveQuestion(savedQuestion);
-        storage.updateQuiz("q1", { isLive: true });
-        storage.updateQuestion("qq1", { question: "Updated?" });
+        await storage.saveUser(savedUser);
+        await storage.saveQuiz(savedQuiz);
+        await storage.saveQuestion(savedQuestion);
+        await storage.updateQuiz("q1", { isLive: true });
+        await storage.updateQuestion("qq1", { question: "Updated?" });
 
         return {
-            userFound: storage.findUserByLogin("a@example.com", "pw")?.id,
-            quizFound: storage.findQuizByCode(" ABC123 ")?.id,
-            quizLive: storage.findQuizById("q1")?.isLive,
-            questionText: storage.getQuestionsByQuiz("q1")[0]?.question,
+            userFound: (await storage.findUserByLogin("a@example.com", "pw"))?.id,
+            quizFound: (await storage.findQuizByCode(" ABC123 "))?.id,
+            quizLive: (await storage.findQuizById("q1"))?.isLive,
+            questionText: (await storage.getQuestionsByQuiz("q1"))[0]?.question,
             normalized: storage.normalizeQuizCode(" ab12 ")
         };
     });

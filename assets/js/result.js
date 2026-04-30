@@ -3,13 +3,13 @@ import { getResults } from "./storage.js";
 
 const resultDetails = document.getElementById("resultDetails");
 
-requireLogin((user) => {
+requireLogin(async (user) => {
     setupLogout();
-    loadResults(user.id);
+    await loadResults(user.id);
 });
 
-function loadResults(userId) {
-    const results = getResults()
+async function loadResults(userId) {
+    const results = (await getResults())
         .filter((result) => result.userId === userId)
         .sort((a, b) => b.date - a.date);
 

@@ -18,7 +18,7 @@ let questions = [];
 let currentIndex = 0;
 let selectedAnswers = {};
 
-requireLogin((user) => {
+requireLogin(async (user) => {
     currentUser = user;
     setupLogout();
 
@@ -27,14 +27,14 @@ requireLogin((user) => {
         return;
     }
 
-    quiz = findQuizById(quizId);
+    quiz = await findQuizById(quizId);
 
     if (!quiz && quizCode) {
-        quiz = findQuizByCode(quizCode);
+        quiz = await findQuizByCode(quizCode);
         quizId = quiz ? quiz.id : quizId;
     }
 
-    questions = getQuestionsByQuiz(quizId);
+    questions = await getQuestionsByQuiz(quizId);
 
     if (quiz) {
         quizTitle.textContent = quiz.title;
@@ -61,7 +61,7 @@ nextBtn.addEventListener("click", () => {
     }
 });
 
-submitBtn.addEventListener("click", () => {
+submitBtn.addEventListener("click", async () => {
     saveCurrentAnswer();
 
     if (!quiz) {
@@ -91,7 +91,7 @@ submitBtn.addEventListener("click", () => {
         };
     });
 
-    saveResult({
+    await saveResult({
         id: createId("result"),
         quizId,
         quizTitle: quiz.title,

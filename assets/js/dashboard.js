@@ -8,13 +8,13 @@ const joinMessage = document.getElementById("joinMessage");
 
 let currentUser = null;
 
-requireLogin((user) => {
+requireLogin(async (user) => {
     currentUser = user;
     setupLogout();
-    loadMyQuizzes();
+    await loadMyQuizzes();
 });
 
-createQuizForm.addEventListener("submit", (event) => {
+createQuizForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const title = document.getElementById("quizTitle").value.trim();
@@ -31,15 +31,15 @@ createQuizForm.addEventListener("submit", (event) => {
         updatedAt: Date.now()
     };
 
-    saveQuiz(quiz);
+    await saveQuiz(quiz);
     window.location.href = `builder.html?quizId=${quiz.id}`;
 });
 
-joinForm.addEventListener("submit", (event) => {
+joinForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const code = normalizeQuizCode(document.getElementById("joinCode").value);
-    const quiz = findQuizByCode(code);
+    const quiz = await findQuizByCode(code);
 
     if (!quiz) {
         showMessage(joinMessage, "No quiz found with this code in this browser.");
@@ -54,8 +54,8 @@ joinForm.addEventListener("submit", (event) => {
     window.location.href = `play.html?quizId=${quiz.id}`;
 });
 
-function loadMyQuizzes() {
-    const quizzes = getQuizzes()
+async function loadMyQuizzes() {
+    const quizzes = (await getQuizzes())
         .filter((quiz) => quiz.ownerId === currentUser.id)
         .sort((a, b) => b.createdAt - a.createdAt);
 

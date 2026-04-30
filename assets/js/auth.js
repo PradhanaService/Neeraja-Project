@@ -24,12 +24,12 @@ function switchTab(tabName) {
     message.textContent = "";
 }
 
-loginForm.addEventListener("submit", (event) => {
+loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const email = document.getElementById("loginEmail").value.trim().toLowerCase();
     const password = document.getElementById("loginPassword").value;
-    const user = findUserByLogin(email, password);
+    const user = await findUserByLogin(email, password);
 
     if (!user) {
         showMessage(message, "Invalid email or password.");
@@ -40,7 +40,7 @@ loginForm.addEventListener("submit", (event) => {
     window.location.href = "dashboard.html";
 });
 
-registerForm.addEventListener("submit", (event) => {
+registerForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const name = document.getElementById("registerName").value.trim();
@@ -52,7 +52,7 @@ registerForm.addEventListener("submit", (event) => {
         return;
     }
 
-    if (findUserByEmail(email)) {
+    if (await findUserByEmail(email)) {
         showMessage(message, "This email is already registered. Please login.");
         return;
     }
@@ -66,7 +66,7 @@ registerForm.addEventListener("submit", (event) => {
         createdAt: Date.now()
     };
 
-    saveUser(user);
+    await saveUser(user);
     saveSession(user);
     window.location.href = "dashboard.html";
 });
