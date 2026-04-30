@@ -1,4 +1,4 @@
-import { requireLogin, setupLogout, showMessage, getQuizCodeFromUrl, getQuizIdFromUrl } from "./common.js";
+import { requireLogin, setupLogout, showMessage, escapeHtml, getQuizCodeFromUrl, getQuizIdFromUrl } from "./common.js";
 import { createId, findQuizByCode, findQuizById, getQuestionsByQuiz, saveResult } from "./storage.js";
 
 let quizId = getQuizIdFromUrl();
@@ -132,7 +132,7 @@ function showQuestion() {
     questionText.textContent = question.question;
 
     quizForm.innerHTML = [1, 2, 3, 4].map((optionNumber) => {
-        const optionText = question[`option${optionNumber}`];
+        const optionText = escapeHtml(question[`option${optionNumber}`]);
         const checked = selectedAnswers[question.id] === optionNumber ? "checked" : "";
 
         return `
