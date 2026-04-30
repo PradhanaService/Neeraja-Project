@@ -4,6 +4,17 @@
   },
   "hosting": {
     "public": ".",
+    "headers": [
+      {
+        "source": "**/*.@(html|js|css)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      }
+    ],
     "ignore": [
       "firebase.json",
       ".firebaserc",

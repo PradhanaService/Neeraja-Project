@@ -26,6 +26,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 let firestoreDb = null;
+let migrationPromise = null;
 
 async function getDb() {
     if (useLocalStorage()) {
@@ -36,6 +37,8 @@ async function getDb() {
         const firestore = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
         firestoreDb = firestore.getFirestore(app);
     }
+
+    await migrateLocalStorageData();
 
     return firestoreDb;
 }
@@ -178,6 +181,31 @@ async function saveItem(localKey, collectionName, value) {
 
     const db = await getDb();
     await setDoc(doc(db, collectionName, value.id), value);
+}
+
+async function migrateLocalStorageData() {
+    if (migrationPromise) {
+        return migrationPromise;
+    }
+
+    migrationPromise = (async () => {
+        const migrationSets = [
+            [USERS_KEY, "users"],
+            [QUIZZES_KEY, "quizzes"],
+            [QUESTIONS_KEY, "questions"],
+            [RESULTS_KEY, "results"]
+        ];
+
+        for (const [localKey, collectionName] of migrationSets) {
+            const items = readLocalList(localKey).filter((item) => item && item.id);
+
+            for (const item of items) {
+                await setDoc(doc(firestoreDb, collectionName, item.id), item);
+            }
+        }
+    })();
+
+    return migrationPromise;
 }
 
 function useLocalStorage() {
